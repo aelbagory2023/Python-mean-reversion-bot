@@ -14,8 +14,8 @@ import matplotlib.dates as mdates
 
 
 # Step 1 Load Data
-processed_data_path = '/content/drive/MyDrive/sp500_ml_features_20240601.csv'  # Updated path
-tickers_dates_path = '/content/drive/MyDrive/sp500_tickers_dates_20240601.csv'  # Updated path
+processed_data_path = '6m_ml_features.csv'  # Updated path
+tickers_dates_path = '6m_tickers_dates.csv'  # Updated path
 
 processed_data = pd.read_csv(processed_data_path)
 tickers_dates = pd.read_csv(tickers_dates_path)
@@ -82,7 +82,7 @@ backtesting_results_df['Predicted_Next_Day_Returns'] = np.arctanh(backtesting_re
 
 
 # --- Path to your data folder ---
-data_folder = '/content/drive/MyDrive/sp500_data_20240101_to_20240601'
+data_folder = '6m_data'
 
 # --- Create a list to store close prices ---
 close_prices = []
@@ -115,7 +115,7 @@ for index, row in backtesting_results_df.iterrows():
 backtesting_results_df['Close_Price'] = close_prices
 
 # Specify the file path where you want to save the DataFrame
-file_path = '/content/drive/MyDrive/backtesting_results.csv'  # Replace with your desired path
+file_path = 'backtesting_results.csv'  # Replace with your desired path
 
 # Save the DataFrame to a CSV file
 backtesting_results_df.to_csv(file_path, index=False)
@@ -123,7 +123,7 @@ backtesting_results_df.to_csv(file_path, index=False)
 import pandas as pd
 
 # Specify the file path where you saved the DataFrame
-file_path = '/content/drive/MyDrive/backtesting_results.csv'  # Replace with your actual path
+file_path = 'backtesting_results.csv'  # Replace with your actual path
 
 # Load the DataFrame from the CSV file
 backtesting_results_df = pd.read_csv(file_path)
