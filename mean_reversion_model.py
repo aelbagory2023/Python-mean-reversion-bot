@@ -14,57 +14,48 @@ import joblib
 from sklearn.metrics import r2_score
 
 
-# Step 1: Fetch the current S&P 500 stock list
-url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
-sp500_table = pd.read_html(url)[0]
-sp500_tickers = sp500_table['Symbol'].to_list()
-print(f"Number of S&P 500 stocks: {len(sp500_tickers)}")
+# Step 1: Define crypto tickers
+crypto_tickers = ['WETH-USD', 'WBTC-USD']
+print(f"Number of crypto assets: {len(crypto_tickers)}")
 
 # Step 2: Setup Google Drive directory for persistent storage
-save_dir = '/content/drive/My Drive/sp500_data'
+save_dir = 'crypto_data'
 os.makedirs(save_dir, exist_ok=True)
 
 # Step 3: Download historical data for all S&P 500 stocks
 start_date = "2019-01-01"
 end_date = "2023-12-31"
 batch_size = 50  # Process in batches to reduce memory usage and API calls
-
 def download_and_save_data(tickers, save_dir):
-    for i in range(0, len(tickers), batch_size):
-        batch_tickers = tickers[i:i + batch_size]
-        print(f"Downloading batch {i // batch_size + 1}: {batch_tickers}")
+    for ticker in tickers:
+        print(f"Downloading data for {ticker}")
         try:
-            # Download data for the batch
+            # Download data for the crypto
             data = yf.download(
-                tickers=batch_tickers,
+                tickers=ticker,
                 start=start_date,
                 end=end_date,
-                interval="1d",
-                group_by="ticker"
+                interval="1d"
             )
-            # Save each stock's data to Google Drive
-            for ticker in batch_tickers:
-                try:
-                    ticker_data = data[ticker]
-                    if not ticker_data.empty:
-                        ticker_data.to_csv(f"{save_dir}/{ticker}.csv")
-                        print(f"Saved {ticker} data to Google Drive.")
-                except Exception as e:
-                    print(f"Error saving data for {ticker}: {e}")
+            if not data.empty:
+                # Save to crypto_data directory
+                data.to_csv(f"{save_dir}/{ticker}.csv")
+                print(f"Saved {ticker} data to {save_dir}")
+            else:
+                print(f"No data found for {ticker}")
         except Exception as e:
-            print(f"Error downloading batch {i // batch_size + 1}: {e}")
-        # Add a delay to prevent hitting API rate limits
-        time.sleep(10)
+            print(f"Error downloading {ticker}: {e}")
+        # Add a small delay between downloads
+        time.sleep(2)
 
 # Execute the download and save process
-download_and_save_data(sp500_tickers, save_dir)
+download_and_save_data(crypto_tickers, save_dir)
 
-print("All downloads complete. Data saved in Google Drive!")
+print("All crypto downloads complete. Data saved to crypto_data directory!")
 
 
-
-# Path to the folder containing stock CSV files
-data_folder = '/content/drive/MyDrive/sp500_data'
+# Path to the folder containing crypto CSV files
+data_folder = 'crypto_data'
 
 # Initialize an empty list to store individual DataFrames
 all_dataframes = []
@@ -91,7 +82,7 @@ combined_data = pd.concat(all_dataframes, ignore_index=True)
 print(combined_data.head())
 
 # Path to save the combined dataset
-combined_file_path = '/content/drive/MyDrive/sp500_combined_data.csv'
+combined_file_path = 'crypto_combined_data.csv'
 
 # Save the combined DataFrame to a CSV file
 combined_data.to_csv(combined_file_path, index=False)
@@ -99,7 +90,7 @@ combined_data.to_csv(combined_file_path, index=False)
 print(f"Combined data saved to {combined_file_path}")
 
 # Load the CSV file
-file_path = '/content/drive/MyDrive/sp500_combined_data.csv'
+file_path = 'crypto_combined_data.csv'
 combined_data = pd.read_csv(file_path)
 
 # Display the first few rows to verify
@@ -207,12 +198,12 @@ def combine_and_process_all_data(folder_path):
     return combined_data
 
 # Define folder path and process all data
-folder_path = '/content/drive/MyDrive/sp500_data'
+folder_path = 'crypto_data'
 processed_data = combine_and_process_all_data(folder_path)
 
 # Save the processed data to a CSV
-processed_data.to_csv('/content/drive/MyDrive/sp500_processed_data.csv', index=False)
-print("Processed data saved to /content/drive/MyDrive/sp500_processed_data.csv")
+processed_data.to_csv('crypto_processed_data.csv', index=False)
+print("Processed data saved to crypto_processed_data.csv")
 
 # Show a preview of the data
 print(processed_data.head())
