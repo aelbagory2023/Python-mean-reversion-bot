@@ -9,15 +9,14 @@ import time
 start_date = "2024-01-01"
 end_date = "2024-06-01"
 date_range_name = f"{start_date.replace('-', '')}_to_{end_date.replace('-', '')}"
-data_folder = f'/content/drive/MyDrive/sp500_data_{date_range_name}'
+data_folder = f'6m_data_{date_range_name}'
 
 # Step 2: Fetch S&P 500 stock tickers
 def get_sp500_tickers():
-    url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
-    sp500_table = pd.read_html(url)[0]
-    sp500_tickers = sp500_table['Symbol'].to_list()
-    print(f"Number of S&P 500 stocks: {len(sp500_tickers)}")
-    return sp500_tickers
+    # Define crypto tickers for WETH and WBTC over USDT
+    crypto_tickers = ['WETH', 'WBTC']
+    print(f"Number of crypto assets: {len(crypto_tickers)}")
+    return crypto_tickers
 
 # Step 3: Download historical data
 def download_and_save_data(tickers, save_dir, start_date, end_date):
@@ -171,7 +170,7 @@ processed_data = combine_and_process_data(data_folder)
 processed_data = scale_and_standardize_data(processed_data)
 
 # Save the processed data
-processed_data_path = f"/content/drive/MyDrive/sp500_processed_data_{date_range_name}.csv"
+processed_data_path = f"6m_processed_data_{date_range_name}.csv"
 processed_data.to_csv(processed_data_path, index=False)
 print(f"Processed data saved to: {processed_data_path}")
 
@@ -197,15 +196,15 @@ def split_data_for_backtesting_and_ml(processed_data_path):
 
     # Save tickers and dates to a separate file
     date_range_name = processed_data_path.split('_')[-1].split('.')[0]  # Extract date range from file name
-    tickers_dates_path = f"/content/drive/MyDrive/sp500_tickers_dates_{date_range_name}.csv"
+    tickers_dates_path = f"6m_tickers_dates_{date_range_name}.csv"
     tickers_dates.to_csv(tickers_dates_path, index=False)
     print(f"Tickers and dates saved to: {tickers_dates_path}")
 
     # Save ML features to a separate file
-    ml_features_path = f"/content/drive/MyDrive/sp500_ml_features_{date_range_name}.csv"
+    ml_features_path = f"6m_ml_features_{date_range_name}.csv"
     ml_features.to_csv(ml_features_path, index=False)
     print(f"ML features saved to: {ml_features_path}")
 
 # Assuming 'processed_data_path' is the path to your processed data file
-processed_data_path = "/content/drive/MyDrive/sp500_processed_data_20240101_to_20240601.csv"
+processed_data_path = "6m_processed_data.csv"
 split_data_for_backtesting_and_ml(processed_data_path)
